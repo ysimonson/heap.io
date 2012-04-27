@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd lib
+npm install connect express mysql socket.io zmq
+mv node_modules server
+npm install mysql mysql-queues zmq
+mv node_modules auth-engine
+
+cd ..
+cp scripts/Makefile Makefile

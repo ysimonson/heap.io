@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>Heap.io unit tests</title>
+
+        <link type="text/css" rel="stylesheet" href="../lib/qunit/qunit.css" />
+
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/qunit/qunit.js"></script>
+        <script type="text/javascript" src="lib/socket.io.min.js"></script>
+        <script type="text/javascript" src="heap.io/heap.io.js"></script>
+        
+        <script type="text/javascript">
+            var heap = null;
+
+            function addTodo(item) {
+                $("ul").append("<li>" + item + "</item>");
+            }
+
+            $(function() {
+                heap = new HeapIO("localhost:8080", function() {
+                    heap.produce("existing-todos", "");
+
+                    heap.consume("existing-todos", 0, function(error, key, value) {
+                        if(error) {
+                            console.error(error);
+                        } else {
+                            for(var i=0; i<value.length; i++) {
+                                addTodo(value[i].item);
+                            }
+                        }
+                    });
+                });
+
+                $("form").submit(function(e) {
+                    var todo = $("#todo").val();
+                    heap.produce("todo", todo);
+                    addTodo(todo);
+                    return false;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Todos</h1>
+
+        <div>
+            <form>
+                <input id="todo" type="text" />
+                <input type="submit" />
+        </div>
+        
+        <ul></ul>
+    </body>
+</html>

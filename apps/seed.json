@@ -1,0 +1,24 @@
+{
+    "users": {
+        "test": {
+            "groups": ["test"],
+            "password": "test-password"
+        },
+
+        "demo": {
+            "groups": ["demo"],
+            "password": "demo-password"
+        }
+    },
+
+    "groups": {
+        "test": {
+            "simpleKeyPermissions": ["does not exist"],
+            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+"]
+        },
+
+        "demo": {
+            "complexKeyPermissions": [".+"]
+        }
+    }
+}
