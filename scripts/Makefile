@@ -42,8 +42,8 @@ run-server:
 	node bin/server/app &
 
 run-demo: run-server run-seed
-	cd bin/apps/demo/todo/static && python -m SimpleHTTPServer &
-	node bin/apps/demo/todo/dbdump/dbdump &
+	cd bin/apps/todo/static && python -m SimpleHTTPServer &
+	node bin/apps/todo/dbdump/dbdump &
 
 run-test: run-server run-seed
 	cd bin/apps/test && python -m SimpleHTTPServer &
