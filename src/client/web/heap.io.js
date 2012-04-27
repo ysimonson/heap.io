@@ -50,19 +50,19 @@
 
     HeapIO.prototype.authenticate = function(username, password, callback) {
         this._request('authRequest', 'validateAuthRequest', [username, password], 'auth', function(res) {
-            callback(res.error);
+            if(callback) callback(res.error);
         });
     };
 
     HeapIO.prototype.produce = function(key, value, callback) {
         this._request('produceRequest', 'validateProduceRequest', [key, value], 'produce', function(res) {
-            callback(res.error);
+            if(callback) callback(res.error);
         });
     };
 
     HeapIO.prototype.consume = function(key, timeout, callback) {
         this._request('consumeRequest', 'validateConsumeRequest', [key, timeout], 'consume', function(res) {
-            callback(res.error, res.key, res.value);
+            if(callback) callback(res.error, res.key, res.value);
         });
     };
 
