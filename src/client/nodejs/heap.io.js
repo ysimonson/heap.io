@@ -48,7 +48,15 @@ HeapIO.prototype._makeRequest = function(parts, callback) {
     socket.send(parts);
 
     socket.once("message", function(response) {
-        callback.call(self, response);
+        var responseJSON = null;
+
+        try {
+            responseJSON = JSON.parse(response.toString());
+        } catch(e) {
+            responseJSON = {error: "Could not decode response to JSON"};
+        }
+
+        callback.call(self, responseJSON);
         self._sockets.push(socket);
     });
 };
