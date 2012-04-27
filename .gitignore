@@ -1,3 +1,4 @@
 bin
 lib/auth-engine
 lib/server
+Makefile
