@@ -17,7 +17,7 @@
             }
 
             $(function() {
-                heap = new HeapIO("localhost:8080", function() {
+                heap = new HeapIO("localhost:8080", "demo", "demo-password", function() {
                     heap.produce("existing-todos", "");
 
                     heap.consume("existing-todos", 0, function(error, key, value) {
