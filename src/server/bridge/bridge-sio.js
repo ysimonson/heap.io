@@ -4,9 +4,6 @@ var config = require("../config").config,
     parseCookie = require("connect").utils.parseCookie,
     Session = require('connect').middleware.session.Session;
 
-//TODO: authentication
-//authorizers do not check if the username or password is in the object - this must be done separately!
-
 exports.use = function(expressApp, backend, authorizer) {
     var sio = io.listen(expressApp, {log: false});
 
