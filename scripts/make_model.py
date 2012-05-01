@@ -7,7 +7,7 @@ def main():
     scope = sys.argv[1]
     file_path = sys.argv[2]
 
-    model_source = open(MODEL_FILE).read().replace("__scope__", scope)
+    model_source = open(MODEL_FILE).read().replace("__model_scope__", scope)
     file_source = open(file_path).read().replace("__model__", model_source) if os.path.exists(file_path) else model_source
 
     handler = open(file_path, "w")

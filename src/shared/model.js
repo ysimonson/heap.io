@@ -1,5 +1,4 @@
-//TODO: add a whitelist
-__scope__ = (function() {
+__model_scope__ = (function() {
     var MAX_KEY_LENGTH = 4096,
         MAX_VALUE_LENGTH = 4 * 1024 * 1024,
         MIN_USERNAME_LENGTH = 1,
