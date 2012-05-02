@@ -16,19 +16,19 @@ __inject_to__ = (function() {
                 var producePayload = {
                     username: heap.username,
                     requestId: produceRequestId,
-                    args: request.args || []
+                    args: options.args || []
                 };
 
                 var produceCallback = options.request ? options.request : function(error) {
                     if(error) throw new Error(error);
                 };
 
-                heap.produce(produceNamespace, request, produceCallback);
+                heap.produce(produceNamespace, producePayload, produceCallback);
 
                 if(options.response) {
                     var consumeNamespace = [produceNamespace, heap.username, produceRequestId];
 
-                    heap.consume(consumeNamespace, options.timeout || 0, function(error, key, value) {
+                    heap.consume(consumeNamespace.join("/"), options.timeout || 0, function(error, key, value) {
                         options.response(error, value);
                     });
                 }
