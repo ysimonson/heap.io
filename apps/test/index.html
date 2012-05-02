@@ -3,121 +3,35 @@
         <title>Heap.io unit tests</title>
 
         <link type="text/css" rel="stylesheet" href="../lib/qunit/qunit.css" />
+        <link type="text/css" rel="stylesheet" href="css/main.css" />
 
         <script type="text/javascript" src="lib/jquery.min.js"></script>
         <script type="text/javascript" src="lib/qunit/qunit.js"></script>
         <script type="text/javascript" src="lib/socket.io.min.js"></script>
         <script type="text/javascript" src="heap.io/heap.io.js"></script>
         
-        <script type="text/javascript">
-            var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        <script type="text/javascript" src="js/test.js"></script>
+        <script type="text/javascript" src="js/core.js"></script>
+        <script type="text/javascript" src="js/patterns.js"></script>
+        <script type="text/javascript" src="js/emberjs.js"></script>
 
-            function randomString(n) {
-                var str = [];
-                for(var i=0; i<n; i++) str.push(CHARS.charAt(Math.floor(Math.random() * CHARS.length)));
-                return str.join("");
-            }
-
-            $(function() {
-                module("Heap.io tests");
-
-                function produce(key, value) {
-                    client.produce(key, value, function(error) {
-                        if(error) ok(false, "Error occurred on produce: " + error);
-                    });
-                }
-
-                function consume(pattern, timeout, expectedKey, expectedValue) {
-                    client.consume(pattern, timeout, function(error, key, value) {
-                        if(error) {
-                            ok(false, "Error occurred on consume: " + error);
-                        } else {
-                            equal(key, expectedKey);
-                            deepEqual(value, expectedValue);
-                            start();
-                        }
-                    });
-                }
-
-                var client = new heap.IO("http://localhost:8080", "test", "test-password", function(error) {
-                    test("Authentication", function() {
-                        ok(!error);
-                    });
-
-                    asyncTest("Non-existent simple consume", function() {
-                        consume("does not exist", 1, null, null);
-                    });
-
-                    asyncTest("Non-existent complex consume", function() {
-                        consume(/c.mpl.x/, 1, null, null);
-                    });
-
-                    asyncTest("Simple produce-consume", function() {
-                        produce("simple pc", {value: 1});
-                        consume("simple pc", 0, "simple pc", {value: 1});
-                    });
-                    
-                    asyncTest("Simple consume-produce", function() {
-                        consume("simple cp", 0, "simple cp", {value: 2});
-                        produce("simple cp", {value: 2});
-                    });
-
-                    asyncTest("Complex produce-consume", function() {
-                        produce("complex pc", {value: 3});
-                        consume(/c.mpl.x pc/, 0, "complex pc", {value: 3});
-                    });
-
-                    asyncTest("Complex consume-produce", function() {
-                        consume(/c.mpl.x cp/, 0, "complex cp", {value: 4});
-                        produce("complex cp", {value: 4});
-                    });
-
-                    asyncTest("Unauthorized key - produce", function() {
-                        client.produce("unauthorized", "test", function(error) {
-                            console.log("RESULT:", error);
-                            ok(error);
-                            start();
-                        });
-                    });
-
-                    asyncTest("Unauthorized key - consume", function() {
-                        client.consume("unauthorized", 1, function(error) {
-                            ok(error);
-                            start();
-                        });
-                    });
-
-                    test("Empty key", function() {
-                        raises(function() { produce("", ""); });
-                    });
-
-                    test("Too big key", function() {
-                        raises(function() { produce("random/" + randomString(4090), ""); });
-                    });
-
-                    test("Non-string key", function() {
-                        raises(function() { produce(true, ""); })
-                    });
-
-                    asyncTest("Big key", function() {
-                        var key = "random/" + randomString(4089);
-                        produce(key, {value: 5});
-                        consume(key, 0, key, {value: 5}, true);
-                    });
-
-                    test("Big value", function() {
-                        raises(function() { produce(randomString(8001), ""); })
-                    });
-                });
-            });
-        </script>
     </head>
     <body>
-        <h1 id="qunit-header">Heap.io unit tests</h1>
-        <h2 id="qunit-banner"></h2>
-        <div id="qunit-testrunner-toolbar"></div>
-        <h2 id="qunit-userAgent"></h2>
-        <ol id="qunit-tests"></ol>
-        <div id="qunit-fixture">test markup, will be hidden</div>
+        <div id="test-runner">
+            <h1 id="qunit-header">Heap.io unit tests</h1>
+            <h2 id="qunit-banner"></h2>
+            <div id="qunit-testrunner-toolbar"></div>
+            <h2 id="qunit-userAgent"></h2>
+            <ol id="qunit-tests"></ol>
+            <div id="qunit-fixture">test markup, will be hidden</div>
+        </div>
+
+        <!--<div id="tests">
+            <h1>Tests</h1>
+            <ul>
+                <li><a href="javascript:run('core')">core</a></li>
+                <li><a href="javascript:run('emberjs')">ember.js adapter</a></li>
+            </ul>
+        </div>-->
     </body>
 </html>

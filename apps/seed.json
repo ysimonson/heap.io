@@ -14,7 +14,7 @@
     "groups": {
         "test": {
             "simpleKeyPermissions": ["does not exist"],
-            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+"]
+            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+", "patterns/.+"]
         },
 
         "demo": {
