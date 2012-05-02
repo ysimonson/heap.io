@@ -5,13 +5,11 @@ __inject_to__ = (function() {
                 namespace = namespace.substring(0, namespace.length - 1);
             }
 
-            this.heap = heap;
-            this.namespace = namespace;
-            this.requestId = 0;
+            var requestId = 0;
 
             return function(name, options) {
                 var produceNamespace = [namespace, name].join("/");
-                var produceRequestId = this.requestId++;
+                var produceRequestId = requestId++;
 
                 var producePayload = {
                     username: heap.username,
