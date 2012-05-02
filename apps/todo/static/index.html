@@ -10,17 +10,17 @@
         <script type="text/javascript" src="heap.io/heap.io.js"></script>
         
         <script type="text/javascript">
-            var heap = null;
+            var client = null;
 
             function addTodo(item) {
                 $("ul").append("<li>" + item + "</item>");
             }
 
             $(function() {
-                heap = new HeapIO("localhost:8080", "demo", "demo-password", function() {
-                    heap.produce("existing-todos", "");
+                client = new heap.IO("localhost:8080", "demo", "demo-password", function() {
+                    client.produce("existing-todos", "");
 
-                    heap.consume("existing-todos", 0, function(error, key, value) {
+                    client.consume("existing-todos", 0, function(error, key, value) {
                         if(error) {
                             console.error(error);
                         } else {
@@ -33,7 +33,7 @@
 
                 $("form").submit(function(e) {
                     var todo = $("#todo").val();
-                    heap.produce("todo", todo);
+                    client.produce("todo", todo);
                     addTodo(todo);
                     return false;
                 });
