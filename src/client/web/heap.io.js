@@ -8,7 +8,7 @@
         return host;
     }
 
-    function HeapIO() {
+    function IO() {
         var self = this;
 
         self.host = arguments.length > 1 ? arguments[0] : defaultHost();
@@ -38,7 +38,7 @@
         });
     }
 
-    HeapIO.prototype._request = function(modelCreator, validator, args, header, callback) {
+    IO.prototype._request = function(modelCreator, validator, args, header, callback) {
         var req = model[modelCreator].apply(model, args);
         var error = model[validator](req);
 
@@ -49,26 +49,26 @@
         }
     };
 
-    HeapIO.prototype.authenticate = function(username, password, callback) {
+    IO.prototype.authenticate = function(username, password, callback) {
         this._request('authRequest', 'validateAuthRequest', [username, password], 'auth', function(res) {
             if(callback) callback(res.error);
         });
     };
 
-    HeapIO.prototype.produce = function(key, value, callback) {
+    IO.prototype.produce = function(key, value, callback) {
         this._request('produceRequest', 'validateProduceRequest', [key, value], 'produce', function(res) {
             if(callback) callback(res.error);
         });
     };
 
-    HeapIO.prototype.consume = function(key, timeout, callback) {
+    IO.prototype.consume = function(key, timeout, callback) {
         this._request('consumeRequest', 'validateConsumeRequest', [key, timeout], 'consume', function(res) {
             if(callback) callback(res.error, res.key, res.value);
         });
     };
 
     this.heap = {
-        IO: HeapIO,
+        IO: IO,
         patterns: patterns
     };
 })(this);
