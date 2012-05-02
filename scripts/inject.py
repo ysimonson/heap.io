@@ -8,7 +8,12 @@ def main():
     file_path = sys.argv[3]
 
     inject_source = open(inject_file).read().replace("__inject_to__", scope)
-    file_source = open(file_path).read().replace("__inject_source__", inject_source) if os.path.exists(file_path) else inject_source
+
+    if os.path.exists(file_path):
+        inject_file_name = os.path.basename(inject_file).split(".")[0]
+        file_source = open(file_path).read().replace("__%s_source__" % inject_file_name, inject_source)
+    else:
+        file_source = inject_source
 
     handler = open(file_path, "w")
     handler.write(file_source)

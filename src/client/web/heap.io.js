@@ -1,5 +1,6 @@
 (function() {
-    __inject_source__
+    __model_source__
+    __patterns_source__
 
     function defaultHost() {
         var host = window.location.protocol + "//" + window.location.hostname;
@@ -67,4 +68,5 @@
     };
 
     this.HeapIO = HeapIO;
+    this.HeapIOPatterns = HeapIOPatterns;
 })(this);

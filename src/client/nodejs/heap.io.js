@@ -2,7 +2,8 @@ var zmq = require('zmq'),
     util = require("util"),
     events = require("events");
 
-__inject_source__
+__model_source__
+__patterns_source__
 
 var CONNECTION_STRING = "ipc:///tmp/heapio";
 
@@ -88,3 +89,4 @@ HeapIO.prototype.consume = function(key, timeout, callback) {
 };
 
 exports.HeapIO = HeapIO;
+exports.HeapIOPatterns = HeapIO;

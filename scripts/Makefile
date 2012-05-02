@@ -20,7 +20,9 @@ build-utils:
 build-clients:
 	cp -r src/client bin/client
 	scripts/inject.py src/shared/model.js 'var model' bin/client/nodejs/heap.io.js
+	scripts/inject.py src/shared/patterns.js 'var HeapIOPatterns' bin/client/nodejs/heap.io.js
 	scripts/inject.py src/shared/model.js 'var model' bin/client/web/heap.io.js
+	scripts/inject.py src/shared/patterns.js 'var HeapIOPatterns' bin/client/web/heap.io.js
 
 build-apps:
 	cp -r apps bin/apps

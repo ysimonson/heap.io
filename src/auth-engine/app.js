@@ -14,19 +14,6 @@ heap.on("error", function(error) {
 
 if(process.argv.length > 2) seeder(process.argv[2], client);
 
-function loop(eventPattern, callback) {
-    var receiver = function(error, key, value) {
-        if(error) {
-            console.error("Heap.IO Error: " + error);
-        } else {
-            callback(key, value);
-            heap.consume(eventPattern, 0, receiver);
-        }
-    };
-
-    heap.consume(eventPattern, 0, receiver);
-}
-
 //TODO: add ability to add users
 
 /*loop("__heap.io/auth/group/add", function(e) {
