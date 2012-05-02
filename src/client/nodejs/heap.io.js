@@ -7,14 +7,14 @@ __patterns_source__
 
 var CONNECTION_STRING = "ipc:///tmp/heapio";
 
-function HeapIO() {
+function IO() {
     events.EventEmitter.call(this);
     this._sockets = [];
 };
 
-util.inherits(HeapIO, events.EventEmitter);
+util.inherits(IO, events.EventEmitter);
 
-HeapIO.prototype._emitError = function(type, message, callback) {
+IO.prototype._emitError = function(type, message, callback) {
     var error = {type: type, message: message};
 
     if(callback) {
@@ -24,7 +24,7 @@ HeapIO.prototype._emitError = function(type, message, callback) {
     }
 };
 
-HeapIO.prototype._makeRequest = function(parts, callback) {
+IO.prototype._makeRequest = function(parts, callback) {
     var self = this;
     
     //Try to grab a cached socket
@@ -62,7 +62,7 @@ HeapIO.prototype._makeRequest = function(parts, callback) {
     });
 };
 
-HeapIO.prototype.produce = function(key, value, callback) {
+IO.prototype.produce = function(key, value, callback) {
     var req = model.produceRequest(key, value);
     var error = model.validateProduceRequest(req);
 
@@ -75,7 +75,7 @@ HeapIO.prototype.produce = function(key, value, callback) {
     }
 };
 
-HeapIO.prototype.consume = function(key, timeout, callback) {
+IO.prototype.consume = function(key, timeout, callback) {
     var req = model.consumeRequest(key, timeout);
     var error = model.validateConsumeRequest(req);
 
@@ -88,5 +88,5 @@ HeapIO.prototype.consume = function(key, timeout, callback) {
     }
 };
 
-exports.HeapIO = HeapIO;
-exports.HeapIOPatterns = HeapIO;
+exports.IO = IO;
+exports.patterns = patterns;

@@ -67,6 +67,8 @@
         });
     };
 
-    this.HeapIO = HeapIO;
-    this.HeapIOPatterns = HeapIOPatterns;
+    this.heap = {
+        IO: HeapIO,
+        patterns: patterns
+    };
 })(this);

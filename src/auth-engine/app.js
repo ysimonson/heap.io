@@ -1,18 +1,18 @@
 //TODO: send responses to the user
 
-var heapio = require("./heap.io/heap.io"),
+var heap = require("./heap.io/heap.io"),
     mysql = require("mysql"),
     config = require("./config").config,
     seeder = require("./seeder");
 
-var heap = new heapio.HeapIO();
-var client = mysql.createClient(config.auth);
+var heapClient = new heap.IO();
+var mysqlClient = mysql.createClient(config.auth);
 
-heap.on("error", function(error) {
+heapClient.on("error", function(error) {
     console.error("Heap.IO Error:", error);
 });
 
-if(process.argv.length > 2) seeder(process.argv[2], client);
+if(process.argv.length > 2) seeder(process.argv[2], mysqlClient);
 
 //TODO: add ability to add users
 

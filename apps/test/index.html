@@ -22,13 +22,13 @@
                 module("Heap.io tests");
 
                 function produce(key, value) {
-                    heap.produce(key, value, function(error) {
+                    client.produce(key, value, function(error) {
                         if(error) ok(false, "Error occurred on produce: " + error);
                     });
                 }
 
                 function consume(pattern, timeout, expectedKey, expectedValue) {
-                    heap.consume(pattern, timeout, function(error, key, value) {
+                    client.consume(pattern, timeout, function(error, key, value) {
                         if(error) {
                             ok(false, "Error occurred on consume: " + error);
                         } else {
@@ -39,7 +39,7 @@
                     });
                 }
 
-                var heap = new HeapIO("http://localhost:8080", "test", "test-password", function(error) {
+                var client = new heap.IO("http://localhost:8080", "test", "test-password", function(error) {
                     test("Authentication", function() {
                         ok(!error);
                     });
@@ -73,7 +73,7 @@
                     });
 
                     asyncTest("Unauthorized key - produce", function() {
-                        heap.produce("unauthorized", "test", function(error) {
+                        client.produce("unauthorized", "test", function(error) {
                             console.log("RESULT:", error);
                             ok(error);
                             start();
@@ -81,7 +81,7 @@
                     });
 
                     asyncTest("Unauthorized key - consume", function() {
-                        heap.consume("unauthorized", 1, function(error) {
+                        client.consume("unauthorized", 1, function(error) {
                             ok(error);
                             start();
                         });
