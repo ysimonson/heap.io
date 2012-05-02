@@ -1,5 +1,6 @@
 (function() {
-    __model__
+    __model_source__
+    __patterns_source__
 
     function defaultHost() {
         var host = window.location.protocol + "//" + window.location.hostname;
@@ -66,5 +67,8 @@
         });
     };
 
-    this.HeapIO = HeapIO;
+    this.heap = {
+        IO: HeapIO,
+        patterns: patterns
+    };
 })(this);
