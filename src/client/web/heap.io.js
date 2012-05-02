@@ -1,5 +1,5 @@
 (function() {
-    __model__
+    __inject_source__
 
     function defaultHost() {
         var host = window.location.protocol + "//" + window.location.hostname;

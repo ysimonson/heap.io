@@ -2,7 +2,7 @@ var zmq = require('zmq'),
     util = require("util"),
     events = require("events");
 
-__model__
+__inject_source__
 
 var CONNECTION_STRING = "ipc:///tmp/heapio";
 

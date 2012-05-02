@@ -1,4 +1,4 @@
-__model_scope__ = (function() {
+__inject_to__ = (function() {
     var MAX_KEY_LENGTH = 4096,
         MAX_VALUE_LENGTH = 4 * 1024 * 1024,
         MIN_USERNAME_LENGTH = 1,

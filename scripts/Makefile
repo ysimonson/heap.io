@@ -1,4 +1,4 @@
-VALIDATION_FILE=src/shared/js/validation.js
+MODEL_FILE=/tmp/model.js
 
 all: clean build-server build-clients build-utils build-apps
 
@@ -9,7 +9,7 @@ clean:
 build-server:
 	cp -r src/server/ bin/server
 	cp -r lib/server bin/server/node_modules
-	python scripts/make_model.py 'module.exports' bin/server/model.js
+	scripts/inject.py src/shared/model.js 'module.exports' bin/server/model.js
 
 build-utils:
 	cp -r src/auth-engine bin/auth-engine
@@ -19,8 +19,8 @@ build-utils:
 
 build-clients:
 	cp -r src/client bin/client
-	python scripts/make_model.py 'var model' bin/client/nodejs/heap.io.js
-	python scripts/make_model.py 'var model' bin/client/web/heap.io.js
+	scripts/inject.py src/shared/model.js 'var model' bin/client/nodejs/heap.io.js
+	scripts/inject.py src/shared/model.js 'var model' bin/client/web/heap.io.js
 
 build-apps:
 	cp -r apps bin/apps
