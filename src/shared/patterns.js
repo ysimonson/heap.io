@@ -36,8 +36,8 @@ __inject_to__ = (function() {
         },
 
         loop: function(heap, key, callback) {
-            var receiver = function(error, key, value) {
-                callback(error, key, value);
+            var receiver = function(error, consumedKey, consumedValue) {
+                callback(error, consumedKey, consumedValue);
                 heap.consume(key, 0, receiver);
             };
 
