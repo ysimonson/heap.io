@@ -3,3 +3,4 @@ lib/auth-engine
 lib/server
 Makefile
 dump.rdb
+node_modules
