@@ -42,6 +42,10 @@ exports.use = function(expressApp, backend, authorizer) {
             socket.on("produce", debugLogger("produce"));
             socket.on("consume", debugLogger("consume"));
         }
+
+        socket.on('disconnect', function() {
+            backend.
+        });
     });
 };
 

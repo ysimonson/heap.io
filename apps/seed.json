@@ -14,7 +14,7 @@
     "groups": {
         "test": {
             "simpleKeyPermissions": ["does not exist"],
-            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+", "patterns/.+"]
+            "complexKeyPermissions": ["simple ..", "complex ..", "random/.+", "patterns/.+", "ember-data/.+"]
         },
 
         "demo": {
