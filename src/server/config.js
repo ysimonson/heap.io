@@ -2,7 +2,14 @@ exports.config = {
     debug: true,
     port: 8080,
     sessionSecret: "q4dWVEyRKAT6tP7uyik4bxzgYeCxxJOZcp8Pq2TTcHDsNWgojZ3rNTr2ZPZI",
-    bridges: ["sio", "web", "zmq"],
+
+    bridges: {
+        ws: {},
+        zmq: {},
+        http: {
+            origin: "*"
+        }
+    },
 
     auth: {
         type: 'mysql',
