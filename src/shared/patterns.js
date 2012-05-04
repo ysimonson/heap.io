@@ -70,10 +70,18 @@ __inject_to__ = (function() {
         }
     };
 
-    var loop = function(heap, key, callback) {
+    var LOOP_ERROR_SLEEP_TIME = 1000;
+
+    var loop = function(heap, key, callback, successSleepTime, errorSleepTime) {
+        if(!successSleepTime) successSleepTime = 0;
+        if(!errorSleepTime) errorSleepTime = LOOP_ERROR_SLEEP_TIME;
+
         var receiver = function(error, consumedKey, consumedValue) {
             callback(error, consumedKey, consumedValue);
-            heap.consume(key, 0, receiver);
+
+            setTimeout(function() {
+                heap.consume(key, 0, receiver);
+            }, error ? errorSleepTime : successSleepTime);
         };
 
         heap.consume(key, 0, receiver);
