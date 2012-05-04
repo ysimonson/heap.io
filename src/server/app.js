@@ -7,8 +7,10 @@ var app = express.createServer(),
     datastore = new backend.Datastore(),
     authorizer = new auth.Authorizer(config.auth);
 
-for(var i=0; i<config.bridges.length; i++) {
-    var bridge = require("./bridge/bridge-" + config.bridges[i]);
+app.use(express.bodyParser());
+
+for(var bridgeName in config.bridges) {
+    var bridge = require("./bridge/bridge-" + bridgeName);
     bridge.use(app, datastore, authorizer);
 }
 

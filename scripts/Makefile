@@ -24,18 +24,17 @@ build-clients:
 	scripts/inject.py src/shared/patterns.js 'var patterns' bin/client/nodejs/heap.io.js
 	scripts/inject.py src/shared/model.js 'var model' bin/client/web/heap.io.js
 	scripts/inject.py src/shared/patterns.js 'var patterns' bin/client/web/heap.io.js
+	scripts/inject.py src/shared/b64.js 'var Base64' bin/client/web/heap.io.js
 
 build-apps:
 	cp -r apps bin/apps
 
 	cp -r lib/apps bin/apps/test/lib
 	cp -r bin/client/web bin/apps/todo/static/heap.io
-	cp lib/web/socket.io.min.js bin/apps/test/lib/socket.io.min.js
 	cp -r bin/client/web bin/apps/test/heap.io
 	cp bin/proxy/ember/client/heap.io-ember-adapter.js bin/apps/test/heap.io/heap.io-ember-adapter.js
 	
 	cp -r lib/apps bin/apps/todo/static/lib
-	cp lib/web/socket.io.min.js bin/apps/todo/static/lib/socket.io.min.js
 	cp -r bin/client/nodejs bin/apps/todo/dbdump/heap.io
 
 run-seed:
