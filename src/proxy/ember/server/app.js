@@ -10,4 +10,4 @@ client.on("error", function(error) {
     console.error("Heap.IO Error:", error);
 });
 
-heap.patterns.rpcServer(client, NAMESPACE, ADAPTER);
+heap.rpcServer(client, NAMESPACE, ADAPTER);

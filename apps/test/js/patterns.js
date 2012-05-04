@@ -5,7 +5,7 @@ function testPatterns() {
         var loopCount = 0;
         var matcher = /^patterns\/loop\/.+/;
 
-        heap.patterns.loop(client, matcher, function(error, key, value) {
+        heap.loop(client, matcher, function(error, key, value) {
             ok(!error);
             ok(matcher.test(key));
             ok(value == 1 || value == 2);
@@ -26,7 +26,7 @@ function testPatterns() {
     });
 
     asyncTest("RPC", function() {
-        heap.patterns.rpcServer(client, "patterns/rpc", {
+        heap.rpcServer(client, "patterns/rpc", {
             silent: function(request) {
                 ok(!request.error);
             },
@@ -44,7 +44,7 @@ function testPatterns() {
             }
         });
 
-        var rpc = heap.patterns.rpcClient(client, "patterns/rpc");
+        var rpc = heap.rpcClient(client, "patterns/rpc");
         var noError = function(error) { ok(!error); }
 
         rpc("silent", { request: noError });

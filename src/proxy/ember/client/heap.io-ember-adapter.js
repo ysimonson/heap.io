@@ -4,7 +4,7 @@ DS.HeapIOAdapter = DS.Adapter.extend({
     init: function() {
         var client = this.get('client');
         var namespace = this.get('namespace');
-        this.set('_rpc', heap.patterns.rpcClient(client, namespace));
+        this.set('_rpc', heap.rpcClient(client, namespace));
     },
 
     _request: function(method, args, callback) {
