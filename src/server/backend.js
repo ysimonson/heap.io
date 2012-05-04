@@ -1,3 +1,5 @@
+//TODO: need a way of detecting dropped events and re-enqueing them
+
 var queue = require("./queue"),
     model = require("./model"),
     str = require("./str");

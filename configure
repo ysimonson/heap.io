@@ -1,16 +1,7 @@
 #!/bin/sh
 
-cd lib
-
-if [ ! -d "server" ]; then
-    npm install connect express mysql socket.io zmq
-    mv node_modules server
+if [ ! -d "node_modules" ]; then
+    npm install connect express mysql socket.io zmq mysql-queues
 fi
 
-if [ ! -d "auth-engine" ]; then
-    npm install mysql mysql-queues zmq
-    mv node_modules auth-engine
-fi
-
-cd ..
 cp scripts/Makefile Makefile
