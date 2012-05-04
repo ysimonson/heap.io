@@ -8,7 +8,7 @@ client.on("error", function(error) {
     console.error("Heap.IO Error:", error);
 });
 
-heap.patterns.loop(client, "todo", function(error, key, value) {
+heap.loop(client, "todo", function(error, key, value) {
     if(error) {
         console.error("Heap.IO error:", error);
     } else {
@@ -18,7 +18,7 @@ heap.patterns.loop(client, "todo", function(error, key, value) {
     }
 });
 
-heap.patterns.loop(client, "existing-todos", function(error, key, value) {
+heap.loop(client, "existing-todos", function(error, key, value) {
     if(error) {
         console.error("Heap.IO error:", error);
     } else {

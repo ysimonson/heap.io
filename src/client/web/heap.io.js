@@ -153,6 +153,8 @@
 
     this.heap = {
         IO: IO,
-        patterns: patterns
+        loop: patterns.loop,
+        rpcClient: patterns.rpcClient,
+        rpcServer: patterns.rpcServer
     };
 })(this);

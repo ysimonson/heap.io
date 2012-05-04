@@ -89,4 +89,6 @@ IO.prototype.consume = function(key, timeout, callback) {
 };
 
 exports.IO = IO;
-exports.patterns = patterns;
+exports.loop = patterns.loop;
+exports.rpcClient = patterns.rpcClient;
+exports.rpcServer = patterns.rpcServer;
