@@ -9,6 +9,7 @@ clean:
 build-server:
 	cp -r src/server/ bin/server
 	scripts/inject.py src/shared/model.js 'module.exports' bin/server/model.js
+	cp -r lib/dashboard/* bin/server/plugins/debug/dashboard/static/lib
 
 build-utils:
 	cp -r src/auth-engine bin/auth-engine
