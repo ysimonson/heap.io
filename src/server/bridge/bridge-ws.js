@@ -48,7 +48,7 @@ exports.use = function(expressApp, backend, authorizer) {
         });
 
         ws.on("close", function() {
-            //TODO
+            if(ws.user) backend.removeUser(ws.user);
         });
     });
 };

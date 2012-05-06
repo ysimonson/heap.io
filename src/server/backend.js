@@ -117,7 +117,13 @@ Datastore.prototype.consume = function(user, req, callback) {
 };
 
 Datastore.prototype.removeUser = function(user) {
-    
+    var remover = function(waiter) { return waiter.user === user; };
+
+    for(var key in this._simpleWaiters) {
+        dsutil.removeAllFromMapByPredicate(this._simpleWaiters, key, remover);
+    }
+
+    dsutil.removeAllByPredicate(this._complexWaiters, remover);
 };
 
 exports.Datastore = Datastore;
