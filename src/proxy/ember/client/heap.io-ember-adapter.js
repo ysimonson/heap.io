@@ -8,6 +8,8 @@ DS.HeapIOAdapter = DS.Adapter.extend({
     },
 
     _request: function(method, args, callback) {
+        console.log("REQUEST", method, args, callback);
+
         var rpc = this.get('_rpc');
 
         rpc(method, {
@@ -24,19 +26,19 @@ DS.HeapIOAdapter = DS.Adapter.extend({
     },
 
     createRecord: function(store, type, record) {
-        this._request("create", [type, record], function(value) {
+        this._request("create", [type, record.toJSON()], function(value) {
             store.didCreateRecord(record, value);
         });
     },
 
     updateRecord: function(store, type, record) {
-        this._request("update", [type, record], function(value) {
+        this._request("update", [type, record.toJSON()], function(value) {
             store.didUpdateRecord(record, value);
         });
     },
 
     deleteRecord: function(store, type, record) {
-        this._request("delete", [type, record], function(value) {
+        this._request("delete", [type, record.toJSON()], function(value) {
             store.didDeleteRecord(value);
         });
     },

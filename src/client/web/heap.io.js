@@ -94,31 +94,31 @@
 
     function IO() {
         var self = this;
-        var host = arguments.length > 1 ? arguments[0] : defaultHost();
-        var username = arguments.length > 2 ? arguments[1] : null;
-        var password = arguments.length > 3 ? arguments[2] : "";
+        self.host = arguments.length > 1 ? arguments[0] : defaultHost();
+        self.username = arguments.length > 2 ? arguments[1] : null;
+        self.password = arguments.length > 3 ? arguments[2] : "";
         var auth = null;
 
         var callback = arguments.length > 0 ? arguments[arguments.length - 1] : function(error) {
             if(error) throw new Error(error);  
         };
 
-        if(host.indexOf("http://") != 0 && host.indexOf("https://") != 0) {
-            host = window.location.protocol + "//" + host;
+        if(self.host.indexOf("http://") != 0 && self.host.indexOf("https://") != 0) {
+            self.host = window.location.protocol + "//" + self.host;
         }
 
-        if(host.charAt(host.length - 1) != "/") {
-            host = host + "/";
+        if(self.host.charAt(self.host.length - 1) != "/") {
+            self.host = self.host + "/";
         }
 
-        if(username) {
-            auth = model.authRequest(username, password);
+        if(self.username) {
+            auth = model.authRequest(self.username, self.password);
             var authValidationError = model.validateAuthRequest(auth);
             if(authValidationError) throw new Error(authValidationError);
         }        
 
         var Backend = window.WebSocket !== undefined ? WebSocketEngine : PollingEngine;
-        self._backend = new Backend(host, auth, callback);
+        self._backend = new Backend(self.host, auth, callback);
 
         self._backend.onError = function() {
             console.error(message);
