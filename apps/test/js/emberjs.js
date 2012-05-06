@@ -1,5 +1,5 @@
 function testEmber() {
-    module("Ember.js adapter");
+    /*module("Ember.js adapter");
 
     var checkErnest = function(foundErnest) {
         equal(foundErnest.get("id"), ernest.get("id"));
@@ -101,5 +101,5 @@ function testEmber() {
         age: 24
     });
 
-    App.store.commit();
+    App.store.commit();*/
 }
