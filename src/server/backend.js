@@ -1,13 +1,13 @@
 //TODO: need a way of detecting dropped events and re-enqueing them
 
-var queue = require("./queue"),
-    model = require("./model"),
-    str = require("./str");
+var model = require("./model"),
+    str = require("./str"),
+    dsutil = require("./dsutil");
 
 function Datastore() {
-    this._values = new queue.QueueMap();        //{string => ...}
-    this._simpleWaiters = new queue.QueueMap(); //{key => {key: string, callback: function(key, value), timeout: number}}
-    this._complexWaiters = new queue.Queue();   //[{key: regex, callback: function(key, value), timeout: number}]
+    this._values = {};
+    this._simpleWaiters = {};
+    this._complexWaiters = [];
     this._tieBreaker = true;
 };
 
@@ -25,17 +25,17 @@ Datastore.prototype.produce = function(user, req, callback) {
     }
 
     var trySimpleWaiters = function() {
-        return runWaiter(self._simpleWaiters.dequeue(req.key));
+        return runWaiter(dsutil.dequeueFromMap(self._simpleWaiters, req.key));
     };
 
     var tryComplexWaiters = function() {
-        return runWaiter(self._complexWaiters.removeByPredicate(function(complexWaiter) {
+        return runWaiter(dsutil.removeByPredicate(self._complexWaiters, function(complexWaiter) {
             return complexWaiter.user.canConsume(req.key) && str.fullMatch(complexWaiter.key, req.key);
         }));
     };
 
     var tryDatastore = function() {
-        self._values.enqueue(req.key, req.value);
+        dsutil.enqueueToMap(self._values, req.key, req.value);
     };
 
     if(!user.canProduce(req.key)) {
@@ -74,13 +74,15 @@ Datastore.prototype.consume = function(user, req, callback) {
             return callback(model.consumeResponse("Unauthorized", null, null));
         }
 
-        var value = self._values.dequeue(req.key);
+        var value = dsutil.dequeueFromMap(self._values, req.key);
 
         if(value !== undefined) {
             callback(model.consumeResponse(null, req.key, value));
         } else {
-            self._simpleWaiters.enqueue(req.key, createWaiter(function(timeoutId) {
-                self._simpleWaiters.map[req.key].removeByPredicate(function(simpleWaiter) {
+            var container = dsutil.getOrCreateContainer(self._simpleWaiters, req.key);
+
+            container.unshift(createWaiter(function(timeoutId) {
+                dsutil.removeFromMapByPredicate(self._simpleWaiters, req.key, function(simpleWaiter) {
                     return simpleWaiter.timeout == timeoutId;
                 });
             }));
@@ -88,17 +90,20 @@ Datastore.prototype.consume = function(user, req, callback) {
     };
 
     var consumeComplexForExisting = function() {
-        for(var key in self._values.map) {
+        for(var key in self._values) {
             if(user.canConsume(key) && str.fullMatch(req.key, key)) {
-                callback(model.consumeResponse(null, key, self._values.dequeue(key)));
+                callback(model.consumeResponse(null, key, dsutil.dequeueFromMap(self._values, key)));
                 return true;
             }
         }
     };
 
     var enqueueComplexWaiter = function() {
-        self._complexWaiters.enqueue(createWaiter(function(timeoutId) {
-            self._complexWaiters.removeByPredicate(function(complexWaiter) {
+        //Added to the end (rather than the beginning like everywhere else) to
+        //make complex waiters in ascending order of insertion time. This way
+        //earlier complex waiters are matched first, preventing starvation.
+        self._complexWaiters.push(createWaiter(function(timeoutId) {
+            dsutil.removeByPredicate(self._complexWaiters, function(complexWaiter) {
                 return complexWaiter.timeout == timeoutId;
             });
         }));
@@ -109,6 +114,10 @@ Datastore.prototype.consume = function(user, req, callback) {
     } else {
         consumeComplexForExisting() || enqueueComplexWaiter();
     }
+};
+
+Datastore.prototype.removeUser = function(user) {
+    
 };
 
 exports.Datastore = Datastore;
