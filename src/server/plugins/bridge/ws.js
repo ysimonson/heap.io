@@ -1,10 +1,9 @@
 var WebSocketServer = require("ws").Server,
-    config = require("../config").config,
-    model = require("../model");
+    model = require("../../model");
 
 var clientIdCounter = 0;
 
-exports.use = function(expressApp, backend, authorizer) {
+exports.use = function(expressApp, backend, authorizer, pluginConfig) {
     var wss = new WebSocketServer({server: expressApp});
 
     wss.on("connection", function(ws) {
@@ -14,8 +13,6 @@ exports.use = function(expressApp, backend, authorizer) {
         ws.authorizer = authorizer;
 
         ws.reply = function(id, payload) {
-            if(config.debug) console.log("SENDING", id, payload);
-
             if(ws.readyState == 1) {
                 ws.send(JSON.stringify({id: id, payload: payload}));
             }
@@ -32,7 +29,6 @@ exports.use = function(expressApp, backend, authorizer) {
             }
 
             var id = json.id, request = json.request, payload = json.payload;
-            if(config.debug) console.log("RECEIVED", id, request, payload);
 
             if(typeof(json) != 'object') {
                 ws.reply(id, model.emptyResponse("Request JSON is not an object"));

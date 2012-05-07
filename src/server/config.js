@@ -3,10 +3,11 @@ exports.config = {
     port: 8080,
     sessionSecret: "q4dWVEyRKAT6tP7uyik4bxzgYeCxxJOZcp8Pq2TTcHDsNWgojZ3rNTr2ZPZI",
 
-    bridges: {
-        ws: {},
-        zmq: {},
-        http: {
+    plugins: {
+        "debug/dashboard": {},
+        "bridge/ws": {},
+        "bridge/zmq": {},
+        "bridge/http": {
             origin: "*"
         }
     },

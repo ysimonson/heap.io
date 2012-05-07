@@ -1,10 +1,9 @@
 var zmq = require("zmq"),
-    config = require("../config").config,
-    model = require("../model");
+    model = require("../../model");
 
 var CONNECTION_STRING = "ipc:///tmp/heapio";
 
-exports.use = function(expressApp, backend, authorizer) {
+exports.use = function(expressApp, backend, authorizer, pluginConfig) {
     var socket = zmq.socket('xrep');
 
     socket.expressApp = expressApp;

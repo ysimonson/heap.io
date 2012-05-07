@@ -2,27 +2,52 @@
 
 var model = require("./model"),
     str = require("./str"),
-    dsutil = require("./dsutil");
+    dsutil = require("./dsutil"),
+    util = require("util"),
+    events = require("events");
+
+var eventIdCounter = 0, traceIdCounter = 0;
 
 function Datastore() {
+    events.EventEmitter.call(this);
     this._values = {};
     this._simpleWaiters = {};
     this._complexWaiters = [];
     this._tieBreaker = true;
 };
 
+util.inherits(Datastore, events.EventEmitter);
+
+Datastore.prototype._emit = function(event, eventId, user, req, res) {
+    this.emit(event, {
+        traceId: traceIdCounter++,
+        eventId: eventId,
+        user: user,
+        req: req,
+        res: res
+    });
+};
+
+Datastore.prototype._respond = function(event, callback, eventId, user, req, res) {
+    callback(res);
+    this._emit(event, eventId, user, req, res);
+};
+
 Datastore.prototype.produce = function(user, req, callback) {
     var self = this;
+    var eventId = eventIdCounter++;
+    self._emit("produce/pre", eventId, user, req, null);
 
     var runWaiter = function(waiter) {
         if(waiter) {
             if(waiter.timeout != null) clearTimeout(waiter.timeout);
-            waiter.callback(model.consumeResponse(null, req.key, req.value));
+            var res = model.consumeResponse(null, req.key, req.value);
+            self._respond("consume/post", waiter.callback, waiter.eventId, waiter.user, waiter.req, res);
             return true;
         } else {
             return false;
         }
-    }
+    };
 
     var trySimpleWaiters = function() {
         return runWaiter(dsutil.dequeueFromMap(self._simpleWaiters, req.key));
@@ -30,7 +55,7 @@ Datastore.prototype.produce = function(user, req, callback) {
 
     var tryComplexWaiters = function() {
         return runWaiter(dsutil.removeByPredicate(self._complexWaiters, function(complexWaiter) {
-            return complexWaiter.user.canConsume(req.key) && str.fullMatch(complexWaiter.key, req.key);
+            return complexWaiter.user.canConsume(req.key) && str.fullMatch(complexWaiter.req.key, req.key);
         }));
     };
 
@@ -39,7 +64,8 @@ Datastore.prototype.produce = function(user, req, callback) {
     };
 
     if(!user.canProduce(req.key)) {
-        return callback(model.emptyResponse("Unauthorized"))
+        var res = model.emptyResponse("Unauthorized");
+        return self._respond("produce/post", callback, eventId, user, req, res);
     }
 
     self._tieBreaker = !self._tieBreaker;
@@ -50,34 +76,46 @@ Datastore.prototype.produce = function(user, req, callback) {
         tryComplexWaiters() || trySimpleWaiters() || tryDatastore();
     }
 
-    callback(model.emptyResponse());
+    self._respond("produce/post", callback, eventId, user, req, model.emptyResponse());
 };
 
 Datastore.prototype.consume = function(user, req, callback) {
     var self = this;
+    var eventId = eventIdCounter++;
+    self._emit("consume/pre", eventId, user, req, null);
 
     var createWaiter = function(timeoutCallback) {
         var timeoutId = null;
 
         if(req.timeout > 0) {
             timeoutId = setTimeout(function() {
-                callback(model.consumeResponse(null, null, null));
+                var res = model.consumeResponse(null, null, null);
+                self._respond("consume/post", callback, eventId, user, req, res);
                 timeoutCallback(timeoutId);
             }, req.timeout);
         }
 
-        return {user: user, key: req.key, timeout: timeoutId, callback: callback};
+        return {
+            eventId: eventId,
+            user: user,
+            req: req,
+            timeout: timeoutId,
+            callback: callback
+        };
     };
 
     var consumeSimple = function() {
         if(!user.canConsume(req.key)) {
-            return callback(model.consumeResponse("Unauthorized", null, null));
+            var res = model.consumeResponse("Unauthorized", null, null);
+            self._respond("consume/post", callback, eventId, user, req, res);
+            return;
         }
 
         var value = dsutil.dequeueFromMap(self._values, req.key);
 
         if(value !== undefined) {
-            callback(model.consumeResponse(null, req.key, value));
+            var res = model.consumeResponse(null, req.key, value);
+            self._respond("consume/post", callback, eventId, user, req, res);
         } else {
             var container = dsutil.getOrCreateContainer(self._simpleWaiters, req.key);
 
@@ -92,7 +130,8 @@ Datastore.prototype.consume = function(user, req, callback) {
     var consumeComplexForExisting = function() {
         for(var key in self._values) {
             if(user.canConsume(key) && str.fullMatch(req.key, key)) {
-                callback(model.consumeResponse(null, key, dsutil.dequeueFromMap(self._values, key)));
+                var res = model.consumeResponse(null, key, dsutil.dequeueFromMap(self._values, key));
+                self._respond("consume/post", callback, eventId, user, req, res);
                 return true;
             }
         }
