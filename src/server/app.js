@@ -9,9 +9,9 @@ var app = express.createServer(),
 
 app.use(express.bodyParser());
 
-for(var bridgeName in config.bridges) {
-    var bridge = require("./bridge/bridge-" + bridgeName);
-    bridge.use(app, datastore, authorizer);
+for(var pluginName in config.plugins) {
+    var plugin = require("./plugins/" + pluginName);
+    plugin.use(app, datastore, authorizer, config.plugins[pluginName]);
 }
 
 app.listen(config.port);

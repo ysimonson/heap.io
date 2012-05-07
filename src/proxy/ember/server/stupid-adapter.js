@@ -15,23 +15,26 @@ function values(obj) {
 
 module.exports = {
     create: function(request, type, record) {
-        console.log("ASDASDASDASDASDASDASDSAD", request, type, record);
+        console.log("CREATE", type, record);
         record.id = id++;
         getContainer(type)[record.id] = record;
         request.finish(record);
     },
 
     update: function(request, type, record) {
+        console.log("UPDATE", type, record);
         getContainer(type)[record.id] = record;
         request.finish(record);
     },
 
     delete: function(request, type, record) {
+        console.log("DELETE", type, record);
         delete getContainer(type)[record.id];
         request.finish(record);
     },
 
     find: function(request, type, id) {
+        console.log("FIND", type, id);
         if(id === null) {
             request.finish(values(getContainer(type)));
         } else {
@@ -40,6 +43,7 @@ module.exports = {
     },
 
     search: function(type, query) {
+        console.log("SEARCH", type, query);
         //TODO
         console.log(query);
         request.finish(values(getContainer(type)));
