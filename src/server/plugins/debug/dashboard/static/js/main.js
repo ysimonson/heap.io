@@ -19,12 +19,21 @@ function flattenObj(obj) {
     var newObj = {};
 
     for(var key in obj) {
-        var value = obj[key];
-        newObj[key] = typeof(value) == "object" ? JSON.stringify(value) : value;
+        newObj[key] = JSON.stringify(obj[key]);
     }
 
     return newObj;
 }
+
+function flattenArray(array) {
+    var newArray = [];
+
+    for(var i=0; i<array.length; i++) {
+        newArray.push(JSON.stringify(array[i]));
+    }
+
+    return newArray;
+};
 
 function addEntry(entry) {
     var container = $("#content");
@@ -63,6 +72,12 @@ function newPost(obj) {
 function newSnapshot(obj) {
     var time = new Date();
 
+    var flattenInnerArrays = function(obj) {
+        var values = {};
+        for(var key in obj) values[key] = flattenArray(obj[key]);
+        return values;
+    };
+
     addEntry({
         id: "snapshot",
         name: "Snapshot at " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds(),
@@ -70,9 +85,9 @@ function newSnapshot(obj) {
         type: "snapshot",
 
         entries: {
-            values: hasKeys(obj.values) ? obj.values : "Nothing",
-            "simple waiters": hasKeys(obj.simpleWaiters) ? obj.simpleWaiters : "Nothing",
-            "complex waiters": obj.complexWaiters.length > 0 ? obj.complexWaiters : "Nothing"
+            values: flattenInnerArrays(obj.values),
+            "simple waiters": flattenInnerArrays(obj.simpleWaiters),
+            "complex waiters": flattenArray(obj.complexWaiters)
         }
     });
 }

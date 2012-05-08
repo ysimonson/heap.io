@@ -28,17 +28,17 @@
 
         <script id="event-content-view" type="text/html">
             <div class="row">
-                <div class="dict-key span1">
+                <div class="dict-key span2">
                     <%= key %>
                 </div>
-                <div class="dict-value span<%=width-1%>">
+                <div class="dict-value span<%=width-2%>">
                     <% if(value instanceof Array) { %>
                         <% for(var i=0; i<value.length; i++) { %>
-                            <%= eventContentTemplate({key: i, value: value[i], width: width - 1}) %>
+                            <%= eventContentTemplate({key: i, value: value[i], width: width - 2}) %>
                         <% } %>
                     <% } else if(value instanceof Object) { %>
                         <% for(var key in value) { %>
-                            <%= eventContentTemplate({key: key, value: value[key], width: width - 1}) %>
+                            <%= eventContentTemplate({key: key, value: value[key], width: width - 2}) %>
                         <% } %>
                     <% } else { %>
                         <pre><%= value %></pre>

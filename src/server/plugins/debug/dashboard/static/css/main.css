@@ -1,11 +1,10 @@
 #content {
     padding: 50px 0.5em 0.5em 0.5em;
-    overflow: hidden;
-    text-overflow: ellipses;
 }
 
 #content h2 {
     font-size: 18px;
+    overflow: hidden;
 }
 
 #title {
@@ -20,6 +19,7 @@
 
 .dict-key {
     text-align: right;
+    overflow: hidden;
 }
 
 .dict-value {
