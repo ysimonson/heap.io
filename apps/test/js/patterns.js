@@ -16,10 +16,10 @@ function testPatterns() {
 
         setTimeout(function() {
             if(loopCount < 2) {
-                ok(false, "Loop did not execute within 1s");
+                ok(false, "Loop did not execute within 2s");
                 start();
             }
-        }, 1000);
+        }, 2000);
 
         client.produce("patterns/loop/1", 1);
         client.produce("patterns/loop/2", 2);

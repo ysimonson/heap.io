@@ -55,6 +55,7 @@ __inject_to__ = (function() {
     var keyValidator = stringType("key", 1, MAX_KEY_LENGTH);
     var isComplexValidator = simpleType("isComplex", "boolean");
     var timeoutValidator = simpleType("timeout", "number");
+    var eventIdValidator = simpleType("eventId", "number");
     var usernameValidator = stringType("username", MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH);
     var passwordValidator = stringType("password", MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH);
 
@@ -84,8 +85,12 @@ __inject_to__ = (function() {
             return {key: serializedKey, isComplex: isComplex, timeout: timeout};
         },
 
-        consumeResponse: function(error, key, value) {
-            return {error: error, key: key, value: value};
+        confirmConsumeRequest: function(eventId) {
+            return {eventId: eventId};
+        },
+
+        consumeResponse: function(error, eventId, key, value) {
+            return {error: error, key: key, value: value, eventId: eventId};
         },
 
         validateAuthRequest: function(obj) {
@@ -98,6 +103,10 @@ __inject_to__ = (function() {
 
         validateConsumeRequest: function(obj) {
             return validate(obj, keyValidator, isComplexValidator, timeoutValidator);
+        },
+
+        validateConfirmConsumeRequest: function(obj) {
+            return validate(obj, eventIdValidator);
         }
     };
 })();

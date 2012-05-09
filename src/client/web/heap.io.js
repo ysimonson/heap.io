@@ -139,14 +139,22 @@
     };
 
     IO.prototype.consume = function(key, timeout, callback) {
+        var self = this;
         var payload = model.consumeRequest(key, timeout);
         var error = model.validateConsumeRequest(payload);
 
         if(error) {
             throw new Error(error);
         } else {
-            this._backend.call("consume", payload, function(res) {
-                if(callback) callback(res.error, res.key, res.value);
+            self._backend.call("consume", payload, function(res) {
+                if(callback) {
+                    callback(res.error, res.key, res.value);
+                }
+
+                if(!res.error) {
+                    var confirmPayload = model.confirmConsumeRequest(res.eventId);
+                    self._backend.call("consume/confirm", confirmPayload, function() {});
+                }
             });
         }
     };

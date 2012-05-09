@@ -38,6 +38,8 @@ exports.use = function(expressApp, backend, authorizer, pluginConfig) {
                 produce(ws, id, payload);
             } else if(request == "consume") {
                 consume(ws, id, payload);
+            } else if(request == "consume/confirm") {
+                confirmConsume(ws, id, payload);
             } else {
                 ws.reply(id, model.emptyResponse("Unknown request type"));
             }
@@ -91,3 +93,9 @@ var consume = preValidate(model.validateConsumeRequest, function(socket, id, req
         socket.reply(id, res);
     });
 }); 
+
+var confirmConsume = preValidate(model.validateConfirmConsumeRequest, function(socket, id, req) {
+    socket.backend.confirmConsume(socket.user, req, function(res) {
+        socket.reply(id, res);
+    });
+});

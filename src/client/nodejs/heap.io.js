@@ -76,14 +76,22 @@ IO.prototype.produce = function(key, value, callback) {
 };
 
 IO.prototype.consume = function(key, timeout, callback) {
+    var self = this;
     var req = model.consumeRequest(key, timeout);
     var error = model.validateConsumeRequest(req);
 
     if(error) {
         throw new Error(error);
     } else {
-        this._makeRequest(["consume", JSON.stringify(req)], function(res) {
-            if(callback) callback(res.error, res.key, res.value);
+        self._makeRequest(["consume", JSON.stringify(req)], function(res) {
+            if(callback) {
+                callback(res.error, res.key, res.value);
+            }
+
+            if(!res.error) {
+                var confirmPayload = JSON.stringify(model.confirmConsumeRequest(res.eventId));
+                self._makeRequest["consume/confirm", confirmPayload, function() {}];
+            }
         });
     }
 };

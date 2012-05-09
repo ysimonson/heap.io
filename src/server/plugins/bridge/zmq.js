@@ -27,6 +27,8 @@ exports.use = function(expressApp, backend, authorizer, pluginConfig) {
                 produce.call(socket, envelope, contentJSON);
             } else if(header == "consume") {
                 consume.call(socket, envelope, contentJSON);
+            } else if(header == "consume/confirm") {
+                confirmConsume.call(socket, envelope, contentJSON);
             }
         });
     });
@@ -61,6 +63,19 @@ function consume(envelope, req) {
         }
 
         self.backend.consume(self.user, req, function(res) {
+            self.reply(envelope, res);
+        });
+    }
+}
+
+function confirmConsume(envelope, contentJSON) {
+    var self = this;
+    var error = model.validateConfirmConsumeRequest(req);
+
+    if(error) {
+        self.reply(envelope, model.emptyResponse(error));
+    } else {
+        self.backend.confirmConsume(self.user, req, function(res) {
             self.reply(envelope, res);
         });
     }

@@ -32,4 +32,8 @@ class HeapIO(object):
             is_complex = False
 
         response = self._request("consume", {"key": key_cleaned, "isComplex": is_complex, "timeout": timeout})
-        return response.get("error"), response["key"], response["value"]
+        return response.get("error"), response.get("eventId"), response.get("key"), response.get("value")
+
+    def confirm_consume(self, event_id):
+        response = self._request("consume/confirm", {"eventId": event_id})
+        return response.get("error")

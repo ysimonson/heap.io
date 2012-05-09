@@ -47,6 +47,7 @@ exports.use = function(expressApp, backend, authorizer, pluginConfig) {
 
     expressApp.all("/produce", allowOrigin);
     expressApp.all("/consume", allowOrigin);
+    expressApp.all("/consume/confirm", allowOrigin);
 
     expressApp.post("/produce", checkAuth, validateObj(model.validateProduceRequest), function(req, res) {
         backend.produce(req.user, req.body, function(obj) {
@@ -64,6 +65,12 @@ exports.use = function(expressApp, backend, authorizer, pluginConfig) {
         }
     
         backend.consume(req.user, req.body, function(obj) {
+            res.send(obj, obj.error ? 400 : 200);
+        });
+    });
+
+    expressApp.post("/consume/confirm", checkAuth, validateObj(model.validateConfirmConsumeRequest), function(req, res) {
+        backend.confirmConsume(req.user, req.body, function(obj) {
             res.send(obj, obj.error ? 400 : 200);
         });
     });

@@ -2,14 +2,16 @@ exports.config = {
     debug: true,
     port: 8080,
     sessionSecret: "q4dWVEyRKAT6tP7uyik4bxzgYeCxxJOZcp8Pq2TTcHDsNWgojZ3rNTr2ZPZI",
+    eventProcessTimeout: 1000,
 
     plugins: {
-        "debug/dashboard": {},
         "bridge/ws": {},
         "bridge/zmq": {},
         "bridge/http": {
             origin: "*"
-        }
+        },
+
+        "debug/dashboard": {}
     },
 
     auth: {
