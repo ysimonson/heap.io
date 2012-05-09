@@ -1,5 +1,6 @@
-bin
-Makefile
+/bin
+/Makefile
+/run
 dump.rdb
 node_modules
 .DS_Store
