@@ -10,14 +10,20 @@ function server {
 
 function demo {
     server; seed
-    (cd bin/apps/todo/static && python -m SimpleHTTPServer &)
     node bin/apps/todo/dbdump/dbdump &
+
+    pushd bin/apps/todo/static
+    python -m SimpleHTTPServer &
+    popd
 }
 
 function test {
     server; seed
-    (cd bin/proxy/ember/server && node app &)
-    (cd bin/apps/test && python -m SimpleHTTPServer &)
+    node bin/proxy/ember/server/app &
+    
+    pushd bin/apps/test
+    python -m SimpleHTTPServer &
+    popd
 }
 
 function control_c {
