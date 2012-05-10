@@ -7,15 +7,16 @@ Authorizer.prototype.authenticate = function(username, password, callback) {
 };
 
 Authorizer.prototype.root = function() {
-    return new SpecialUser(true);
+    return new SpecialUser(true, "root");
 };
 
 Authorizer.prototype.unauthenticated = function() {
-    return new SpecialUser(false);
+    return new SpecialUser(false, "stem");
 };
 
-function SpecialUser(can) {
+function SpecialUser(can, username) {
     this.can = can;
+    this.username = username;
 };
 
 SpecialUser.prototype.canProduce = function() {
