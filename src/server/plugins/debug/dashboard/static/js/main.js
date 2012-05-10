@@ -1,5 +1,4 @@
-var MAX_ENTRIES = 100;
-
+var MAX_ENTRIES = 500;
 var UPDATE_FREQUENCY = 3000;
 
 var BADGE_TYPES = {
@@ -45,6 +44,10 @@ function addEntry(entry) {
     container.prepend($(eventTemplate(entry)));
 }
 
+function updateEntry(entry) {
+    $("#" + entry.id).replaceWith($(eventTemplate(entry)));
+}
+
 function createEntry(obj) {
     var action = /consume/.test(obj.name) ? "consume" : "produce";
     var entries = {};
@@ -63,10 +66,6 @@ function createEntry(obj) {
             res: flattenObj(obj.res)
         }
     };
-}
-
-function newPost(obj) {
-    $("#event-" + obj.eventId).replaceWith()
 }
 
 function newSnapshot(obj) {
@@ -111,13 +110,8 @@ function startUpdates() {
             for(var i=0; i<updates.length; i++) {
                 var update = updates[i];
                 var entry = createEntry(update);
-                var html = $(eventTemplate(entry));
-
-                if(/post/.test(update.name)) {
-                    $("#" + entry.id).replaceWith(html);
-                } else {
-                    $("#content").prepend(html);
-                }
+                var callback = /post/.test(update.name) ? updateEntry : addEntry;
+                callback(entry);
             }
 
             setTimeout(getUpdate, UPDATE_FREQUENCY);
