@@ -55,7 +55,7 @@ function testPatterns() {
 
             response: function(error, value) {
                 ok(!error);
-                equal(value, "RPC");
+                equal(value, "Hello, Joe aged 24");
             }
         });
 

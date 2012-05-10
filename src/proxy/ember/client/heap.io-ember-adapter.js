@@ -8,8 +8,6 @@ DS.HeapIOAdapter = DS.Adapter.extend({
     },
 
     _request: function(method, args, callback) {
-        console.log("REQUEST", method, args, callback);
-
         var rpc = this.get('_rpc');
 
         rpc(method, {
@@ -26,37 +24,38 @@ DS.HeapIOAdapter = DS.Adapter.extend({
     },
 
     createRecord: function(store, type, record) {
-        this._request("create", [type, record.toJSON()], function(value) {
+        this._request("create", [type.toString(), record.toJSON()], function(value) {
             store.didCreateRecord(record, value);
         });
     },
 
     updateRecord: function(store, type, record) {
-        this._request("update", [type, record.toJSON()], function(value) {
+        this._request("update", [type.toString(), record.toJSON()], function(value) {
             store.didUpdateRecord(record, value);
         });
     },
 
     deleteRecord: function(store, type, record) {
-        this._request("delete", [type, record.toJSON()], function(value) {
-            store.didDeleteRecord(value);
+        this._request("delete", [type.toString(), record.toJSON()], function(value) {
+            store.didDeleteRecord(record);
         });
     },
 
     find: function(store, type, id) {
-        this._request("find", [type, id], function(value) {
-            store.load(type, value);
+        this._request("search", [type.toString(), {id: id}], function(value) {
+            store.loadMany(type, value);
         });
     },
 
     findAll: function(store, type) {
-        this._request("search", [type], function(value) {
+        this._request("search", [type.toString()], function(value) {
             store.loadMany(type, value);
         });
     },
 
     findQuery: function(store, type, query, modelArray) {
-        this._request("search", [type, query], function(value) {
+        this._request("search", [type.toString(), query], function(value) {
+            console.log("ASDASD", value);
             modelArray.load(value);
         });
     }
