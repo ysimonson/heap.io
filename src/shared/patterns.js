@@ -31,7 +31,8 @@ __inject_to__ = (function() {
                 var consumeNamespace = [produceNamespace, heap.username, produceRequestId];
 
                 heap.consume(consumeNamespace.join("/"), options.timeout || 0, function(error, key, value) {
-                    options.response(error, value);
+                    var args = [error].concat(value);
+                    options.response.apply(this, args);
                 });
             }
         };
@@ -50,7 +51,7 @@ __inject_to__ = (function() {
                 if(value) {
                     requestData.username = value.username;
                     requestData.requestId = value.requestId;
-                    if(value.args instanceof array) args = value.args;
+                    if(value.args instanceof Array) args = value.args;
                 }
 
                 requestData.finish = function() {
@@ -63,9 +64,11 @@ __inject_to__ = (function() {
             });
         };
 
-        for(var method in context) {
+        for(var methodName in context) {
+            var method = context[methodName];
+
             if(typeof(method) == 'function') {
-                listenFor(method, context[method]);
+                listenFor(methodName, method);
             }
         }
     };
